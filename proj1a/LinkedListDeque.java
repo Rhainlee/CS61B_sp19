@@ -1,5 +1,5 @@
 public class LinkedListDeque<T> {
-    public class ItemNode{
+    private class ItemNode{
         public ItemNode pre;
         public T item;
         public ItemNode next;
@@ -27,14 +27,14 @@ public class LinkedListDeque<T> {
         sentinel.pre = sentinel;
         size = 0;
     }
-
+    /*
     public LinkedListDeque(T x){
         sentinel = new ItemNode();
         sentinel.pre = new ItemNode(sentinel, x, sentinel);
         sentinel.next = new ItemNode(sentinel, x, sentinel);
         size = 1;
     }
-
+    */
     /*Creats a deep copy of other*/
     public LinkedListDeque(LinkedListDeque other){
         sentinel = new ItemNode();
@@ -80,18 +80,28 @@ public class LinkedListDeque<T> {
     }
 
     public T removeFirst(){
+        if(!isEmpty()){
+            size--;
+        }
+        else{
+            return null;
+        }
         ItemNode first = sentinel.next;
         sentinel.next = first.next;
         sentinel.next.pre = sentinel;
-        size = Math.min(0, --size);
         return first.item;
     }
 
     public T removeLast(){
+        if(!isEmpty()){
+            size--;
+        }
+        else{
+            return null;
+        }
         ItemNode last = sentinel.pre;
         sentinel.pre = last.pre;
         sentinel.pre.next = sentinel;
-        size = Math.min(0, --size);
         return last.item;
     }
 

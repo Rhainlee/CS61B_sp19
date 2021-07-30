@@ -1,6 +1,6 @@
 public class ArrayDeque<T>{
-    public static final int Factor = 2;
-    public static final double R = 0.25;
+    private static final int Factor = 2;
+    private static final double R = 0.25;
 
     private T[] items;
     private int size;
