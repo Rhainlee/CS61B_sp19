@@ -47,16 +47,16 @@ public class LinkedListDeque<T> {
     }
 
     public void addFirst(T item){
-        ItemNode first = sentinel.next;
-        sentinel.next = new ItemNode(sentinel, item, first);
-        first.pre = sentinel.next;
+        ItemNode first = new ItemNode(sentinel, item, sentinel.next);
+        sentinel.next.pre = first;
+        sentinel.next = first;
         size += 1;
     }
 
     public void addLast(T item){
-        ItemNode last = sentinel.pre;
-        sentinel.pre = new ItemNode(last, item, sentinel);
-        last.next = sentinel.pre;
+        ItemNode last = new ItemNode(sentinel.pre, item, sentinel);
+        sentinel.pre.next = last;
+        sentinel.pre = last;
         size += 1;
     }
 
@@ -109,10 +109,10 @@ public class LinkedListDeque<T> {
         ItemNode p = sentinel;
         if(index < 0 || index >= size)
             return null;
-        for(int i = 0; i <= index; i++){
+        for(int i = 0; i < index; i++){
             p = p.next;
         }
-        return p.item;
+        return p.next.item;
     }
     /** Gets the item at the given index (recursively). */
     public T getRecursive(int index){
