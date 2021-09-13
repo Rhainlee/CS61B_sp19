@@ -1,0 +1,124 @@
+public class LinkedListDeque<T> implements Deque<T> {
+    private class ItemNode{
+        public ItemNode pre;
+        public T item;
+        public ItemNode next;
+
+        public ItemNode(){
+            pre = null;
+            item = null;
+            next = null;
+        }
+        public ItemNode(ItemNode p, T i, ItemNode n){
+            pre = p;
+            item = i;
+            next = n;
+
+        }
+    }
+    /*the first item is at sentinel.next*/
+    private ItemNode sentinel;
+    private int size;
+
+    /*Creats an empty LinkedListDeque.*/
+    public LinkedListDeque() {
+        sentinel = new ItemNode();
+        sentinel.next = sentinel;
+        sentinel.pre = sentinel;
+        size = 0;
+    }
+
+    /*Creats a deep copy of other*/
+    public LinkedListDeque(LinkedListDeque other){
+        sentinel = new ItemNode();
+        sentinel.next = sentinel;
+        sentinel.pre = sentinel;
+        size = 0;
+        for(int i = 0; i < other.size; i ++){
+            addLast((T)other.get(i));
+        }
+    }
+    @Override
+    public void addFirst(T item){
+        ItemNode first = new ItemNode(sentinel, item, sentinel.next);
+        sentinel.next.pre = first;
+        sentinel.next = first;
+        size += 1;
+    }
+
+    @Override
+    public void addLast(T item){
+        ItemNode last = new ItemNode(sentinel.pre, item, sentinel);
+        sentinel.pre.next = last;
+        sentinel.pre = last;
+        size += 1;
+    }
+
+    @Override
+    public int size(){
+        return size;
+    }
+
+    @Override
+    public void printDeque(){
+        ItemNode p = this.sentinel;
+        while (p.next != this.sentinel){
+            System.out.print(p.next.item);
+            System.out.print(" ");
+            p = p.next;
+        }
+        System.out.println();
+    }
+
+    @Override
+    public T removeFirst(){
+        if(!isEmpty()){
+            size--;
+        }
+        else{
+            return null;
+        }
+        ItemNode first = sentinel.next;
+        sentinel.next = first.next;
+        sentinel.next.pre = sentinel;
+        return first.item;
+    }
+
+    @Override
+    public T removeLast(){
+        if(!isEmpty()){
+            size--;
+        }
+        else{
+            return null;
+        }
+        ItemNode last = sentinel.pre;
+        sentinel.pre = last.pre;
+        sentinel.pre.next = sentinel;
+        return last.item;
+    }
+
+    @Override
+    public T get(int index){
+        ItemNode p = sentinel;
+        if(index < 0 || index >= size)
+            return null;
+        for(int i = 0; i < index; i++){
+            p = p.next;
+        }
+        return p.next.item;
+    }
+    /** Gets the item at the given index (recursively). */
+    public T getRecursive(int index){
+        if(index < 0 || index >= size)
+            return null;
+        return getRecursiveHelper(index, sentinel.next);
+    }
+    /** Helper method for getRecursive. */
+    private T getRecursiveHelper(int index, ItemNode i){
+        if(index == 0){
+            return i.item;
+        }
+        return  getRecursiveHelper(index - 1, i.next);
+    }
+}
