@@ -8,15 +8,17 @@ public class Percolation {
     private int virtualTopSite;
     private int virtualBottomSite;
     private int numberOfOpenSites;
+    private int N;
 
-    public Percolation(int N){               // create N-by-N grid, with all sites initially blocked
+    public Percolation(int N) {               // create N-by-N grid, with all sites initially blocked
         if (N <= 0) {
             throw new java.lang.IllegalArgumentException("invalid argument.");
         }
         sites = new WeightedQuickUnionUF(N * N + 2);
+        N = N;
         blocked = new boolean[N][N];
-        for(boolean[] b : blocked){            //all grids are blocked.
-            for (int i = 0; i < b.length; i++){
+        for (boolean[] b : blocked) {            //all grids are blocked.
+            for (int i = 0; i < b.length; i++) {
                 b[i] = true;
             }
         }
@@ -24,19 +26,21 @@ public class Percolation {
         virtualBottomSite = N * N + 1;
         numberOfOpenSites = 0;
     }
-    private int xyTo1D(int row, int col){
-        return (row + 1) * (col + 1) - 1;
+
+    private int xyTo1D(int row, int col) {
+        return row * N + col;
     }
-    public void open(int row, int col){      // open the site (row, col) if it is not open already
+
+    public void open(int row, int col) {      // open the site (row, col) if it is not open already
         validate(row, col);
-        if(blocked[row][col]){
+        if (blocked[row][col]) {
             blocked[row][col] = false;
             numberOfOpenSites += 1;
         }
         if (row == 0) {
             sites.union(xyTo1D(row, col), virtualTopSite);
         }
-        if(row == blocked.length - 1){
+        if (row == blocked.length - 1) {
             sites.union(xyTo1D(row, col), virtualBottomSite);
         }
         if (row > 0 && isOpen(row - 1, col)) {                       //connect top side.
@@ -53,28 +57,32 @@ public class Percolation {
         }
 
     }
-    public boolean isOpen(int row, int col){ // is the site (row, col) open?
+
+    public boolean isOpen(int row, int col) { // is the site (row, col) open?
         validate(row, col);
         return !blocked[row][col];
     }
-    public boolean isFull(int row, int col){ // is the site (row, col) full?
+
+    public boolean isFull(int row, int col) { // is the site (row, col) full?
         validate(row, col);
         if (sites.connected(xyTo1D(row, col), virtualTopSite)) {
             return true;
         }
         return false;
     }
-    public int numberOfOpenSites(){          // number of open sites
+
+    public int numberOfOpenSites() {          // number of open sites
         return numberOfOpenSites;
     }
-    public boolean percolates(){             // does the system percolate?
-        if (sites.connected(virtualTopSite,virtualBottomSite)) {
+
+    public boolean percolates() {             // does the system percolate?
+        if (sites.connected(virtualTopSite, virtualBottomSite)) {
             return true;
         }
         return false;
     }
 
-    private void validate(int row, int col){
+    private void validate(int row, int col) {
         if (row < 0 || row > blocked.length - 1) {
             throw new java.lang.IndexOutOfBoundsException("invalid index.");
         }
@@ -84,33 +92,34 @@ public class Percolation {
     }
 
 
-    public static void main(String[] args){  // use for unit testing (not required, but keep this here for the autograder)
-        Percolation p = new Percolation(5);
-        p.open(3, 4);
-        p.open(2, 4);
-        p.open(2, 2);
+    public static void main(String[] args) {  // use for unit testing (not required, but keep this here for the autograder)
+        Percolation p = new Percolation(6);
+        p.open(0, 5);
+        p.open(1, 5);
+        p.open(2, 5);
+        p.open(3, 5);
+        p.open(4, 5);
+        p.open(4, 4);
+        p.open(3, 3);
         p.open(2, 3);
-        p.open(0, 2);
+        p.open(1, 3);
         p.open(1, 2);
-        if(p.isFull(2, 2)){
+        if (!p.isFull(1, 2)) {
             System.out.println("testIsFull passed!");
-        }
-        else {
+        } else {
             System.out.println("testIsFull not passed!");
         }
         if (!p.percolates()) {
-            p.open(4, 4);
+            p.open(5, 4);
             if (p.percolates()) {
                 System.out.println("testPercolates passed!");
-            }
-            else {
+            } else {
                 System.out.println("testPercolates not passed!");
             }
-        }
-        else {
+        } else {
             System.out.println("testPercolates step 1 not passed!");
         }
-        if (p.numberOfOpenSites() == 7) {
+        if (p.numberOfOpenSites() == 11) {
             System.out.println("testNumberOfOpenSites passed!");
         }
 
