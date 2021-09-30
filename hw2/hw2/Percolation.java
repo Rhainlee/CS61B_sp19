@@ -8,14 +8,14 @@ public class Percolation {
     private int virtualTopSite;
     private int virtualBottomSite;
     private int numberOfOpenSites;
-    private int N;
+    private int gridSize;
 
     public Percolation(int N) {               // create N-by-N grid, with all sites initially blocked
         if (N <= 0) {
             throw new java.lang.IllegalArgumentException("invalid argument.");
         }
         sites = new WeightedQuickUnionUF(N * N + 2);
-        N = N;
+        gridSize = N;
         blocked = new boolean[N][N];
         for (boolean[] b : blocked) {            //all grids are blocked.
             for (int i = 0; i < b.length; i++) {
@@ -28,7 +28,7 @@ public class Percolation {
     }
 
     private int xyTo1D(int row, int col) {
-        return row * N + col;
+        return row * gridSize + col;
     }
 
     public void open(int row, int col) {      // open the site (row, col) if it is not open already
