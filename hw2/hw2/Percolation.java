@@ -52,15 +52,15 @@ public class Percolation {
         }
         if (row < blocked.length - 1 && isOpen(row + 1, col)) {      //connect down side.
             sites.union(xyTo1D(row, col), xyTo1D(row + 1, col));
-            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row - 1, col));
+            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row + 1, col));
         }
         if (col > 0 && isOpen(row, col - 1)) {                        //connect left side.
             sites.union(xyTo1D(row, col), xyTo1D(row, col - 1));
-            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row - 1, col));
+            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row, col - 1));
         }
         if (col < blocked.length - 1 && isOpen(row, col + 1)) {       //connect right side.
             sites.union(xyTo1D(row, col), xyTo1D(row, col + 1));
-            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row - 1, col));
+            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row, col + 1));
         }
 
     }
