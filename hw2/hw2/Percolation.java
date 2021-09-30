@@ -4,6 +4,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private WeightedQuickUnionUF sites;
+    private WeightedQuickUnionUF sitesNoBackWash;
     private boolean[][] blocked;
     private int virtualTopSite;
     private int virtualBottomSite;
@@ -15,6 +16,7 @@ public class Percolation {
             throw new java.lang.IllegalArgumentException("invalid argument.");
         }
         sites = new WeightedQuickUnionUF(N * N + 2);
+        sitesNoBackWash = new WeightedQuickUnionUF(N * N + 1);
         gridSize = N;
         blocked = new boolean[N][N];
         for (boolean[] b : blocked) {            //all grids are blocked.
@@ -39,21 +41,26 @@ public class Percolation {
         }
         if (row == 0) {
             sites.union(xyTo1D(row, col), virtualTopSite);
+            sitesNoBackWash.union(xyTo1D(row, col), virtualTopSite);
         }
         if (row == blocked.length - 1) {
             sites.union(xyTo1D(row, col), virtualBottomSite);
         }
         if (row > 0 && isOpen(row - 1, col)) {                       //connect top side.
             sites.union(xyTo1D(row, col), xyTo1D(row - 1, col));
+            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row - 1, col));
         }
         if (row < blocked.length - 1 && isOpen(row + 1, col)) {      //connect down side.
             sites.union(xyTo1D(row, col), xyTo1D(row + 1, col));
+            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row - 1, col));
         }
         if (col > 0 && isOpen(row, col - 1)) {                        //connect left side.
             sites.union(xyTo1D(row, col), xyTo1D(row, col - 1));
+            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row - 1, col));
         }
         if (col < blocked.length - 1 && isOpen(row, col + 1)) {       //connect right side.
             sites.union(xyTo1D(row, col), xyTo1D(row, col + 1));
+            sitesNoBackWash.union(xyTo1D(row, col), xyTo1D(row - 1, col));
         }
 
     }
@@ -65,7 +72,7 @@ public class Percolation {
 
     public boolean isFull(int row, int col) { // is the site (row, col) full?
         validate(row, col);
-        if (sites.connected(xyTo1D(row, col), virtualTopSite)) {
+        if (sitesNoBackWash.connected(xyTo1D(row, col), virtualTopSite)) {
             return true;
         }
         return false;
